@@ -1,4 +1,4 @@
-email.config
+email_inputs.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
