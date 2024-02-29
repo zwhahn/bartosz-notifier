@@ -1,26 +1,28 @@
-import smtplib
-from email.message import EmailMessage
-
+import smtplib, ssl
 import email_inputs
 
+HOST = 'smtp-mail.outlook.com'  # SMTP server domain of outlook
+PORT = 587
 
-#  username, password
+FROM_EMAIL = email_inputs.email_adress
+TO_EMAIL = 'mail_inputs.email_adress'
+PASSWORD = email_inputs.password
 
-email_adress = email_inputs.email_adress
-password = email_inputs.password
+MESSAGE = '''Subject: Python script email
+Hello World
+'''
 
-def send_email(email_adress):
-    with open('textfile.txt') as fp:
-        msg = EmailMessage()
-        msg.set_content(fp.read())
-    
-    msg['Subject'] = 'Test'
-    msg['From'] = email_adress
-    msg['To'] = email_adress
+smtp = smtplib.SMTP_SSL(HOST, PORT)
 
-    
-    s = smtplib.SMTP('localhost')
-    s.send_message(msg)
-    s.quit
-    
-send_email(email_adress)
+status_code, response = smtp.ehlo()  # ping server and check if it's running
+print(f"Echoing the server: {status_code}, {response}")
+
+status_code, response = smtp.starttls()  # Establish connection
+print(f"Starting TLS connection: {status_code}, {response}")
+
+status_code, response = smtp.login(FROM_EMAIL, PASSWORD)  # Sign into email
+print(f"Logging in: {status_code}, {response}")
+
+smtp.sendmail(FROM_EMAIL, TO_EMAIL, MESSAGE)
+smtp.quit()
+
